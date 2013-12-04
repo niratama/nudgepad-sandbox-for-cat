@@ -1,5 +1,6 @@
 module.exports = function (app) {
   var url = require('url');
+  var engines = require('consolidate');
 
   var camelize = function (snakeStr) {
     var camelStr = snakeStr.replace(/(?:^|[-_])(\w)/g, function (_, c) {
@@ -8,8 +9,18 @@ module.exports = function (app) {
     return camelStr;
   };
 
+  app.engine('html', engines.hogan);
+
+  app.set('view engine', 'html');
+  app.set('views', __dirname + '/views');
+  
   app.get('/test', function (req, res, next) {
     res.send('test string');
+  });
+  app.post('/test', function (req, res, next) {
+    var name = req.body.name;
+    var comment = req.body.comment;
+    res.render('test', { name: name, comment: comment });
   });
 
   app.get('/camelize', function (req, res, next) {
